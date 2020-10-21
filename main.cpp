@@ -1,41 +1,39 @@
-﻿#include "./func.h"
-#include "./Pos.h"
-#include <vector>
+﻿#include <vector>
 #include <cmath>
 #include <algorithm>
+#include "./func.h"
+#include "./Pos.h"
 
 using namespace std;
 
 int main(){
-	double e = 1e-16;
-	double r = 50;
-	double MAX_count = 1000;
+	//from user
+	double e = 1e-10;
+	double r = 1000;
+	double MAX_count = 100;
+	double left = -1;
+	double right = 2;
 
 	Pos cur;
 	std::vector<Pos> a;
-	double m = 0;
-	double R_max = 0;
-	int R_pos = 1;
-	int count = 0;
+	int count = 0; // count iteration
 
-	a.push_back(Pos(-1, function(-1)));
-	a.push_back(Pos(2, function(2)));
+	a.push_back(Pos(left, function(left)));
+	a.push_back(Pos(right, function(right)));
 
 	double cur_e = a[1].x - a[0].x;
 
 	while (cur_e > e && count < MAX_count) {
-
-		double M = abs((a[1].y - a[0].y) / (a[1].x - a[0].x));
+		double M =       abs((a[1].y - a[1 - 1].y) / (a[1].x - a[1 - 1].x));
 		for (int i = 2; i < a.size(); i++) {
-			double max;
-			max = abs((a[i].y - a[i - 1].y) / (a[i].x - a[i - 1].x));
+			double max = abs((a[i].y - a[i - 1].y) / (a[i].x - a[i - 1].x));
 			if (M > max) M = max;
 		}
 
-		m = (M == 0) ? 1 : r * M;
+		double m = (M == 0) ? 1 : r * M;
 
-		R_max = m * (a[1].x - a[0].x) + (pow((a[1].y - a[0].y), 2) / (m * (a[1].x - a[0].x))) - 2 * (a[1].y + a[0].y);
-
+		int R_pos = 1;
+		double R_max = m * (a[1].x - a[1 - 1].x) + (pow((a[1].y - a[1 - 1].y), 2) / (m * (a[1].x - a[1 - 1].x))) - 2 * (a[1].y + a[1 - 1].y);
 		for (int i = 2; i < a.size(); i++) {
 			double R = m * (a[i].x - a[i - 1].x) + (pow((a[i].y - a[i - 1].y), 2) / (m * (a[i].x - a[i - 1].x))) - 2 * (a[i].y + a[i - 1].y);
 
@@ -44,18 +42,22 @@ int main(){
 				R_pos = i;
 			}
 		}
-		cur_e = a[R_pos].x - a[R_pos - 1].x;
 
 		cur.x = (a[R_pos].x + a[R_pos - 1].x) / 2 - (a[R_pos].y - a[R_pos - 1].y) / (2 * m);
 		cur.y = function(cur.x);
 
 		a.push_back(cur);
 		sort(a.begin(), a.end());
-
+		if (count == 10)
+			count += 0;
 		int pos = find(a.begin(), a.end(), cur) - a.begin();
-		//std::cout << "pos " << pos << " = " << a[pos] << std::endl;
+		std::cout << count << " pos " << pos << " = " << a[pos] << std::endl;
+		cur_e = abs(a[R_pos].x - a[R_pos - 1].x);
 		count++;
 	}
 
-	std::cout << "min = " << cur << std::endl;
+	std::cout << std::endl << "min = " << cur << std::endl;
+	Pos min = a[0];
+	for (int i = 1; i < a.size(); i++) if (a[i].y < min.y) min = a[i];
+	std::cout << "cur_min = " << min << std::endl;
 }
