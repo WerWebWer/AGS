@@ -1,6 +1,8 @@
 ﻿#include "./func.h"
 #include "./Pos.h"
 #include <vector>
+#include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -11,27 +13,26 @@ int main(){
 
 	Pos cur;
 	std::vector<Pos> a;
+	double m = 0;
+	double R_max = 0;
+	int R_pos = 1;
+	int count = 0;
 
 	a.push_back(Pos(-1, function(-1)));
 	a.push_back(Pos(2, function(2)));
 
-	double m = 0;
-
 	double cur_e = a[1].x - a[0].x;
-
-	double R_max = 0;
-	int R_pos = 1;
-
-	int count = 0;
 
 	while (cur_e > e && count < MAX_count) {
 
-		m = M_m(a, r); 
+		double M = abs((a[1].y - a[0].y) / (a[1].x - a[0].x));
+		for (int i = 2; i < a.size(); i++) {
+			double max;
+			max = abs((a[i].y - a[i - 1].y) / (a[i].x - a[i - 1].x));
+			if (M > max) M = max;
+		}
 
-		//auto R = func_R(a, m);
-
-		//R_pos = R.first;
-		//R_max = R.second;
+		m = (M == 0) ? 1 : r * M;
 
 		R_max = m * (a[1].x - a[0].x) + (pow((a[1].y - a[0].y), 2) / (m * (a[1].x - a[0].x))) - 2 * (a[1].y + a[0].y);
 
@@ -43,7 +44,6 @@ int main(){
 				R_pos = i;
 			}
 		}
-		//std::cout << "R_pos " << R_pos << " R_max " << R_max << std::endl;
 		cur_e = a[R_pos].x - a[R_pos - 1].x;
 
 		cur.x = (a[R_pos].x + a[R_pos - 1].x) / 2 - (a[R_pos].y - a[R_pos - 1].y) / (2 * m);
