@@ -29,7 +29,7 @@ public:
 	bool operator== (const Pos& pos) { return x == pos.x; }
 	bool operator!= (const Pos& pos) { return x != pos.x; }
 	friend std::ostream& operator<< (std::ostream& out, const Pos& pos) {
-		out << '(' << pos.x << ", " << pos.y << ')';
+		out << '(' << pos.x << " , " << pos.y << ')';
 		return out;
 	}
 };
