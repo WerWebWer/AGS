@@ -23,13 +23,13 @@ double Rmax(std::vector<double> a){
     return count;
 };
 
-double AGS(double inter[2], double fun(double x)){
+double AGS(double inter[2], double fun(double x), double r, double e){
     double left = inter[0];
     double right = inter[1];
     std::cout << "[ " << left << " ; " << right << " ]" << std::endl;
-    double r = 3; //
+    // double r = 1; //
     double M = 0; //
-    double e = 0.000001; //
+    // double e = 0.000001; //
     double new_point;
     double m; 
     int k = 2;
@@ -41,6 +41,7 @@ double AGS(double inter[2], double fun(double x)){
     point.insert(point.begin(), p1);
     point.push_back(p2);
     while ((point[r_max + 1].first - point[r_max].first) > e) {
+        M = 0;
         for (int i = 0; i < k - 1; i++) {
             int tmpM = abs((point[i + 1].second - point[i].second) / (point[i + 1].first - point[i].first));
             if (M < tmpM) M = tmpM;

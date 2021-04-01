@@ -5,8 +5,10 @@
 #include <vector>
 #include <string>
 
-std::vector<int> getRandomVector(int  sz);
-int getParallelOperations(std::vector<int> vec, const std::string& ops);
-int getSequentialOperations(std::vector<int> vec, const std::string& ops);
+double ParallelOperations(double inter[2], double fun(double x), double r, double e);
+double ParallelAGS(double inter[2], double fun(double x), double r, double e);  // internals parallelization 
+
+double Rmax(std::vector<double> a);
+double AGS(double inter[2], double fun(double x), double r, double e);
 
 #endif  // MODULES_OPENMP_OPS_OMP_H_

@@ -2,6 +2,10 @@ cmake_minimum_required( VERSION 3.15 )
 
 project( "Global search algorithm" )
 
+set( USE_OMP ON )
+set( USE_STD ON )
+set( USE_SEQ ON )
+
 message( STATUS "Global search algorithm" )
 
 if(WIN32)
