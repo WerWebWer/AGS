@@ -18,29 +18,6 @@ if ( USE_OMP )
     enable_testing()
     add_test(NAME ${ProjectId} COMMAND ${ProjectId})
 
-    if( UNIX )
-        foreach (SOURCE_FILE ${ALL_SOURCE_FILES})
-            string(FIND ${SOURCE_FILE} ${PROJECT_BINARY_DIR} PROJECT_TRDPARTY_DIR_FOUND)
-            if (NOT ${PROJECT_TRDPARTY_DIR_FOUND} EQUAL -1)
-                list(REMOVE_ITEM ALL_SOURCE_FILES ${SOURCE_FILE})
-            endif ()
-        endforeach ()
-
-        find_program(CPPCHECK cppcheck)
-        add_custom_target(
-                "${ProjectId}_cppcheck" ALL
-                COMMAND ${CPPCHECK}
-                --enable=warning,performance,portability,information,missingInclude
-                --language=c++
-                --std=c++11
-                --error-exitcode=1
-                --template="[{severity}][{id}] {message} {callstack} \(On {file}:{line}\)"
-                --verbose
-                --quiet
-                ${ALL_SOURCE_FILES}
-        )
-    endif( UNIX )
-
 else( USE_OMP )
     message( STATUS "-- ${ProjectId} - NOT BUILD!"  )
 endif( USE_OMP )
