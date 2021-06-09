@@ -43,7 +43,7 @@ void GSA(double inter[2], double (*fun)(double x), double r, double e, std::prom
         R.clear();
         new_point = (point[r_max + 1].first + point[r_max].first) / 2 - (point[r_max + 1].second - point[r_max].second) / (2 * m);
         point.push_back(std::pair<double, double>(new_point, fun(new_point)));
-        sort(point.begin(), point.end());
+        std::sort(point.begin(), point.end());
         k++;
     }
     pr.set_value(round(point[r_max].first * 10));
@@ -118,7 +118,7 @@ double ParallelOperations(double inter[2], double (*fun)(double x), double r, do
     double M;
     double new_point;
     double m;
-    size_t k = 2;
+    int k = 2;
     int r_max = 0;
     std::vector <std::pair<double, double>> point{ std::pair<double, double>(left, fun(left)), std::pair<double, double>(right, fun(right)) };
     std::vector <double> R;
@@ -194,12 +194,12 @@ size_t* RmaxN(std::vector <std::pair<double, int>> R, size_t n) {
     return r_max;
 };
 
-void calculateNewPoint(std::vector<std::pair<double, double>>* point, double (*fun)(double x), double *m, double *e, size_t *k, size_t *r, int i /*rank*/, double *fact, std::promise<int>&& pr) {
+void calculateNewPoint(std::vector<std::pair<double, double>>* point, double (*fun)(double x), double *m, double *e, int *k, size_t *r, int i /*rank*/, double *result, std::promise<int>&& pr) {
     double new_point = ((*(point->data() + *r + 1)).first + (*(point->data() + *r)).first) / 2 - ((*(point->data() + *r + 1)).second - (*(point->data() + *r)).second) / (2 * (*m));
     *(point->data() + *k + 1 + i) = std::pair<double, double>(new_point, fun(new_point));
     if ((*(point->data() + *r + 1)).first - (*(point->data() + *r)).first < *e) {
         pr.set_value(1);
-        *fact = new_point;
+        *result = new_point;
     }
     else
         pr.set_value(0);
@@ -214,11 +214,10 @@ double ParallelNewPoints(double inter[2], double (*fun)(double x), double r, dou
     double left = inter[0];
     double right = inter[1];
     double M;
-    double new_point;
+    double new_point = 0.;
     double m;
-    size_t k = 1;
+    int k = 1;
     size_t* r_max;
-    double fact = 0.;
     std::vector <std::pair<double, double>> point{ std::pair<double, double>(left, fun(left)), std::pair<double, double>(right, fun(right)) };
     std::vector <std::pair<double, int>> R = { std::pair<double, int>(0, 0) };
     bool flag = false;
@@ -238,7 +237,7 @@ double ParallelNewPoints(double inter[2], double (*fun)(double x), double r, dou
         r_max = RmaxN(R, n);
         for (int i = 0; i < n; i++) {
             futures[i] = promises[i].get_future();
-            threads[i] = std::thread(calculateNewPoint, &point, fun, &m, &e, &k, &r_max[i], i, &fact, std::move(promises[i]));
+            threads[i] = std::thread(calculateNewPoint, &point, fun, &m, &e, &k, &r_max[i], i, &new_point, std::move(promises[i]));
             threads[i].join();
         }
         for (int i = 0; i < n; i++) {
@@ -248,14 +247,14 @@ double ParallelNewPoints(double inter[2], double (*fun)(double x), double r, dou
             }
             futures[i].valid();
         }
-        sort(point.begin(), point.end());
+        std::sort(point.begin(), point.end());
         for (size_t i = 0; i < n; i++)
             R.push_back(std::pair<double, int>(0, R.size()));
-        k += n;
+        k += (int)n;
         delete[]r_max;
         delete[]promises;
     }
     delete[]threads;
     delete[]futures;
-    return fact;
+    return new_point;
 }

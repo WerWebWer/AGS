@@ -45,7 +45,7 @@ double GSA(double inter[2], double fun(double x), double r, double e){
         R.clear();
         new_point = (point[r_max + 1].first + point[r_max].first) / 2 - (point[r_max + 1].second - point[r_max].second) / (2 * m);
         point.push_back(std::pair<double, double>(new_point, fun(new_point)));
-        sort(point.begin(), point.end());
+        std::sort(point.begin(), point.end());
         k++;
     }
     return point[r_max].first;

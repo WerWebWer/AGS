@@ -48,7 +48,7 @@ double GSA(double inter[2], double (*fun)(double x), double r, double e) {
         R.clear();
         new_point = (point[r_max + 1].first + point[r_max].first) / 2 - (point[r_max + 1].second - point[r_max].second) / (2 * m);
         point.push_back(std::pair<double, double>(new_point, fun(new_point)));
-        sort(point.begin(), point.end());
+        std::sort(point.begin(), point.end());
         k++;
     }
     return point[r_max].first;
@@ -117,7 +117,7 @@ double ParallelOperations(double inter[2], double (*fun)(double x), double r, do
         r_max = Rmax(&R);
         new_point = (point[r_max + 1].first + point[r_max].first) / 2 - (point[r_max + 1].second - point[r_max].second) / (2 * m);
         point.push_back(std::pair<double, double>(new_point, fun(new_point)));
-        sort(point.begin(), point.end());
+        std::sort(point.begin(), point.end());
         k++;
     }
     return point[r_max].first;
@@ -154,7 +154,7 @@ double ParallelNewPoints(double inter[2], double (*fun)(double x), double r, dou
 
         int n = R.size() < NUM_THREADS ? R.size() : NUM_THREADS;
         omp_set_num_threads(n);
-        for (size_t i = 0; i < n; i++)
+        for (int i = 0; i < n; i++)
             point.push_back(std::pair<double, double>(0, 0));
         r_max = RmaxN(R, n);
 #pragma omp parallel
@@ -172,9 +172,9 @@ double ParallelNewPoints(double inter[2], double (*fun)(double x), double r, dou
                 }
             }
         }
-        sort(point.begin(), point.end());
+        std::sort(point.begin(), point.end());
 
-        for (size_t i = 0; i < n; i++)
+        for (int i = 0; i < n; i++)
             R.push_back(std::pair<double, int>(0, R.size()));
 
         k += n;
