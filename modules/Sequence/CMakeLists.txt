@@ -41,17 +41,6 @@ if ( USE_SEQ )
         )
     endif( UNIX )
 
-    SET(ARGS_FOR_CHECK_COUNT_TESTS "")
-    foreach (FILE_ELEM ${ALL_SOURCE_FILES})
-        set(ARGS_FOR_CHECK_COUNT_TESTS "${ARGS_FOR_CHECK_COUNT_TESTS} ${FILE_ELEM}")
-    endforeach ()
-
-    add_custom_target("${ProjectId}_check_count_tests" ALL
-            COMMAND "${Python3_EXECUTABLE}"
-            ${CMAKE_SOURCE_DIR}/scripts/check_count_tests.py
-            ${ProjectId}
-            ${ARGS_FOR_CHECK_COUNT_TESTS}
-    )
 else( USE_SEQ )
     message( STATUS "-- ${ProjectId} - NOT BUILD!"  )
 endif( USE_SEQ )
