@@ -1,5 +1,10 @@
 // Copyright 2021 Smirnov Aleksandr
-#include "../../modules/Sequence/hansen_functions.h"
+#include "../../modules/OpenMP/hansen_functions.h"
+
+double intervals[20][2] = { {-1.5, 11}, {2.7, 7.5}, {-10.0, 10.0}, {1.9, 3.9}, {0.0, 1.2},
+{-10.0, 10.0}, {2.7, 7.5}, {-10.0, 10.0}, {3.1, 20.4}, {0.0, 10.0},
+{-1.57, 6.28}, {0.0, 6.28}, {0.001, 0.99}, {0.0, 4.0}, {-5.0, 5.0},
+{-3.0, 3.0}, {-4.0, 4.0}, {0.0, 6.0}, {0.0, 6.5}, {-10.0, 10.0} };
 
 double hfunc1(double x) {
 	return pow(x, 6) / 6.0 - 52.0 / 25.0 * pow(x, 5) + 39.0 / 80.0 * pow(x, 4) +
@@ -190,3 +195,13 @@ double hpfunc19(double x) {
 double hpfunc20(double x) {
 	return exp(-x * x) * (2.0 * x * (x - sin(x)) - 1.0 + cos(x));
 }
+
+double(*pfn[])(double x) = { hfunc1, hfunc2, hfunc3, hfunc4, hfunc5,
+hfunc6, hfunc7, hfunc8, hfunc9, hfunc10,
+hfunc11, hfunc12, hfunc13, hfunc14, hfunc15,
+hfunc16, hfunc17, hfunc18, hfunc19, hfunc20 };
+
+std::vector<std::vector<double>> res = { {10},{5.14575},{-0.49139, -6.77458, 5.79179},{2.868},{0.966086},
+{0.679578},{5.199776},{-0.80032, -7.08351, 5.48286},{17.0392},{7.97867},
+{2.09444, 4.18879},{4.71239, 3.14159},{0.70711},{0.22488},{2.41421},
+{1.590721},{-3, 3},{2},{5.8728656},{1.195137} };
