@@ -5,58 +5,48 @@
 
 #include <iostream>
 #include <algorithm>
-
-#include "vector"
-#include "iterator"
+#include <vector>
+#include <iterator>
 
 #include "../../modules/Sequence/func.h"
 
-double Rmax(std::vector<double> a){
-    double R = a[0];
-    int count = 0;
-    for (int i = 1; i < a.size(); i++) {
-        if (a[i] > R) {
-            R = a[i];
+size_t Rmax(std::vector<double> *a){
+    double *R = a->data();
+    size_t count = 0;
+    for (int i = 1; i < a->size(); i++) {
+        if (*(a->data() + i) > * R) {
+            R = a->data() + i;
             count = i;
         }
     }
     return count;
 };
 
-double AGS(double inter[2], double fun(double x), double r, double e){
+double GSA(double inter[2], double fun(double x), double r, double e){
     double left = inter[0];
     double right = inter[1];
-    std::cout << "[ " << left << " ; " << right << " ]" << std::endl;
-    // double r = 1; //
-    double M = 0; //
-    // double e = 0.000001; //
+    double M = 0;
     double new_point;
     double m; 
-    int k = 2;
-    double r_max = 0;
-    std::vector <std::pair<double, double>> point;
+    size_t k = 2;
+    size_t r_max = 0;
+    std::vector <std::pair<double, double>> point{ std::pair<double, double>(left, fun(left)), 
+                                                   std::pair<double, double>(right, fun(right)) };
     std::vector <double> R;
-    std::pair<double, double> p1(left, fun(left));
-    std::pair<double, double> p2(right, fun(right));
-    point.insert(point.begin(), p1);
-    point.push_back(p2);
     while ((point[r_max + 1].first - point[r_max].first) > e) {
         M = 0;
-        for (int i = 0; i < k - 1; i++) {
-            int tmpM = abs((point[i + 1].second - point[i].second) / (point[i + 1].first - point[i].first));
-            if (M < tmpM) M = tmpM;
-        }
+        for (auto it1 = point.begin(), it2 = ++point.begin(); it2 != point.end(); it1++, it2++)
+            M = fmax(M, abs((it2->second - it1->second) / (it2->first - it1->first)));
         m = (M == 0) ? 1 : r * M;
-        for (int i = 0; i < k - 1; i++) {
-            R.push_back(m * (point[i + 1].first - point[i].first) + ((point[i + 1].second - point[i].second) * (point[i + 1].second - point[i].second)) / (m * (point[i + 1].first - point[i].first)) - 2 * (point[i + 1].second + point[i].second));
-        }
-        r_max = Rmax(R);
+        for (auto it1 = point.begin(), it2 = ++point.begin(); it2 != point.end(); it1++, it2++)
+            R.push_back(m * (it2->first - it1->first) + ((it2->second - it1->second) * (it2->second - it1->second)) / 
+                        (m * (it2->first - it1->first)) - 2 * (it2->second + it1->second));
+        r_max = Rmax(&R);
         R.clear();
         new_point = (point[r_max + 1].first + point[r_max].first) / 2 - (point[r_max + 1].second - point[r_max].second) / (2 * m);
         point.push_back(std::pair<double, double>(new_point, fun(new_point)));
         sort(point.begin(), point.end());
         k++;
     }
-    std::cout << point[r_max].first << " " << point[r_max].second << std::endl;
     return point[r_max].first;
 }
