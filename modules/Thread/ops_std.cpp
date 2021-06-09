@@ -36,7 +36,7 @@ void GSA(double inter[2], double (*fun)(double x), double r, double e, std::prom
     while ((point[r_max + 1].first - point[r_max].first) > e) {
         M = 0;
         for (auto it1 = point.begin(), it2 = ++point.begin(); it2 != point.end(); it1++, it2++)
-            M = fmax(M, abs((it2->second - it1->second) / (it2->first - it1->first)));
+            M = fmax(M, std::abs((it2->second - it1->second) / (it2->first - it1->first)));
         m = (M == 0) ? 1 : r * M;
         for (auto it1 = point.begin(), it2 = ++point.begin(); it2 != point.end(); it1++, it2++)
             R.push_back(m * (it2->first - it1->first) + ((it2->second - it1->second) * (it2->second - it1->second)) / (m * (it2->first - it1->first)) - 2 * (it2->second + it1->second));
@@ -85,7 +85,7 @@ void findM(std::vector<std::pair<double, double>>* point, size_t rank, std::prom
     std::pair<double, double>* point2 = point->data() + rank + 1;
     double M = 0;
     for (size_t i = rank + 1; i < point->size(); i += nthreads, point1 += nthreads, point2 += nthreads) {
-        double tmpM = abs((point2->second - point1->second) / (point2->first - point1->first));
+        double tmpM = std::abs((point2->second - point1->second) / (point2->first - point1->first));
         if (M < tmpM) M = tmpM;
     }
     pr.set_value(round(M * 10000));
@@ -141,7 +141,7 @@ double ParallelOperations(double inter[2], double (*fun)(double x), double r, do
         }
         else {
             for (int i = 0; i < k - 1; i++) {
-                int tmpM = abs((point[i + 1].second - point[i].second) / (point[i + 1].first - point[i].first));
+                int tmpM = std::abs((point[i + 1].second - point[i].second) / (point[i + 1].first - point[i].first));
                 if (M < tmpM) M = tmpM;
             }
         }
@@ -226,7 +226,7 @@ double ParallelNewPoints(double inter[2], double (*fun)(double x), double r, dou
         promises = new std::promise<int>[nthreads];
         M = 0;
         for (auto it1 = point.begin(), it2 = ++point.begin(); it2 != point.end(); it1++, it2++)
-            M = fmax(M, abs((it2->second - it1->second) / (it2->first - it1->first)));
+            M = fmax(M, std::abs((it2->second - it1->second) / (it2->first - it1->first)));
         m = (M == 0) ? 1 : r * M;
 
         for (int i = 0; i < k; i++)
