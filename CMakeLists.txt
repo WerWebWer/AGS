@@ -45,15 +45,6 @@ if( USE_STD )
     find_package( Threads )
 endif( USE_STD )
 
-############################## CPPLINT ##############################
-message( STATUS "############################## CPPLINT ##############################" )
-find_package(Python3 REQUIRED)
-enable_testing()
-if( NOT WIN32 )
-    include(cmake/Cpplint.cmake)
-    cpplint_add_subdirectory(modules)
-endif( NOT WIN32 )
-
 ############################## Modules ##############################
 message( STATUS "############################## Modules ##############################" )
 include_directories(3rdparty/unapproved)
