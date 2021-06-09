@@ -26,7 +26,7 @@ jobs:
         mkdir build
         cd build
         cmake -D USE_SEQ=ON -D USE_OMP=ON -D USE_STD=ON ..
-        cmake --build . --config -j4
+        make -j4
         cd ..
       env:
         CC: gcc-9
