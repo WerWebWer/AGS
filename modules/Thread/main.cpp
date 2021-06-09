@@ -3,12 +3,11 @@
 
 #include <vector>
 
-#include "../../../3rdparty/unapproved/unapproved.h"
+#include "../../3rdparty/unapproved/unapproved.h"
 #include "./ops_std.h"
 #include "./hansen_functions.h"
 
 ::testing::AssertionResult resultInExpected(std::vector<double> expected, double result) {
-    bool flag = false;
     for (size_t i = 0; i < expected.size(); i++) {
         if (round(expected[i] * 10) / 10 == round(result * 10) / 10) {
             return ::testing::AssertionSuccess();
@@ -86,7 +85,7 @@ int main(int argc, char **argv) {
     return RUN_ALL_TESTS();
 }
 
-INSTANTIATE_TEST_CASE_P(/**/, Threads, testing::Values(
+INSTANTIATE_TEST_SUITE_P(/**/, Threads, testing::Values(
     std::make_tuple(pfn[0], intervals[0], res[0], 2., 1e-6),
     std::make_tuple(pfn[1], intervals[1], res[1], 2., 1e-6),
     std::make_tuple(pfn[2], intervals[2], res[2], 2., 1e-6),

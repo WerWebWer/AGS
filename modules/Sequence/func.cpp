@@ -13,7 +13,7 @@
 size_t Rmax(std::vector<double> *a){
     double *R = a->data();
     size_t count = 0;
-    for (int i = 1; i < a->size(); i++) {
+    for (size_t i = 1; i < a->size(); i++) {
         if (*(a->data() + i) > * R) {
             R = a->data() + i;
             count = i;

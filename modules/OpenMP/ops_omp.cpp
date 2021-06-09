@@ -17,7 +17,7 @@
 size_t Rmax(std::vector<double>* a) {
     double* R = a->data();
     size_t count = 0;
-    for (int i = 1; i < a->size(); i++) {
+    for (size_t i = 1; i < a->size(); i++) {
         if (*(a->data() + i) > * R) {
             R = a->data() + i;
             count = i;
@@ -28,7 +28,6 @@ size_t Rmax(std::vector<double>* a) {
 
 // true algorithm
 double GSA(double inter[2], double (*fun)(double x), double r, double e) {
-    int thread_num = omp_get_thread_num();
     double left = inter[0];
     double right = inter[1];
     double M = 0;
@@ -75,7 +74,6 @@ double ParallelGSA(double inter[2], double (*fun)(double x), double r, double e)
         }
 #pragma omp critical 
         {
-            int thread_num = omp_get_thread_num();
             if (fun(min_local) <= fun(min)) {
                 min = min_local;
             }
@@ -138,11 +136,10 @@ double ParallelNewPoints(double inter[2], double (*fun)(double x), double r, dou
     double left = inter[0];
     double right = inter[1];
     double M;
-    double new_point;
+    double new_point = 0;
     double m;
     int k = 1;
     size_t* r_max;
-    double fact = left;
     std::vector <std::pair<double, double>> point{ std::pair<double, double>(left, fun(left)), std::pair<double, double>(right, fun(right)) };
     std::vector <std::pair<double, int>> R = { std::pair<double, int>(0, 0) };
     bool flag = false;
@@ -155,12 +152,11 @@ double ParallelNewPoints(double inter[2], double (*fun)(double x), double r, dou
         for (int i = 0; i < k; i++)
             R[i].first = m * (point[i + 1].first - point[i].first) + ((point[i + 1].second - point[i].second) * (point[i + 1].second - point[i].second)) / (m * (point[i + 1].first - point[i].first)) - 2 * (point[i + 1].second + point[i].second);
 
-        size_t n = R.size() < NUM_THREADS ? R.size() : NUM_THREADS;
+        int n = R.size() < NUM_THREADS ? R.size() : NUM_THREADS;
         omp_set_num_threads(n);
         for (size_t i = 0; i < n; i++)
             point.push_back(std::pair<double, double>(0, 0));
         r_max = RmaxN(R, n);
-        fact = 0;
 #pragma omp parallel
         {
             double new_point_local;
@@ -171,7 +167,7 @@ double ParallelNewPoints(double inter[2], double (*fun)(double x), double r, dou
                 point[k + 1 + i] = std::pair<double, double>(new_point_local, fun(new_point_local));
 #pragma omp critical
                 if (point[r + 1].first - point[r].first < e) {
-                    fact = new_point_local;
+                    new_point = new_point_local;
                     flag = true;
                 }
             }
@@ -181,9 +177,8 @@ double ParallelNewPoints(double inter[2], double (*fun)(double x), double r, dou
         for (size_t i = 0; i < n; i++)
             R.push_back(std::pair<double, int>(0, R.size()));
 
-
         k += n;
         delete[]r_max;
     }
-    return fact;
+    return new_point;
 };
