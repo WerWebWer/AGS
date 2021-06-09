@@ -4,6 +4,7 @@
 #include <utility>
 #include <random>
 #include <iostream>
+#include <algorithm>
 #include "../../modules/Thread/ops_std.h"
 #include "../../3rdparty/unapproved/unapproved.h"
 
@@ -127,19 +128,19 @@ double ParallelOperations(double inter[2], double (*fun)(double x), double r, do
         promisesR = new std::promise<int>[nthreads];
         M = 0;
         if (k >= nthreads + 1) {
-            for (size_t i = 0; i < nthreads; i++) {
+            for (int i = 0; i < nthreads; i++) {
                 futuresM[i] = promisesM[i].get_future();
                 threadsM[i] = std::thread(findM, &point, i, std::move(promisesM[i]));
                 threadsM[i].join();
             }
-            for (size_t i = 0; i < nthreads && i < k - 1; i++) {
+            for (int i = 0; i < nthreads && i < k - 1; i++) {
                 int tmp = (double)futuresM[i].get() / 10000.0;
                 if (M < tmp) M = tmp;
                 futuresM[i].valid();
             }
         }
         else {
-            for (size_t i = 0; i < k - 1; i++) {
+            for (int i = 0; i < k - 1; i++) {
                 int tmpM = abs((point[i + 1].second - point[i].second) / (point[i + 1].first - point[i].first));
                 if (M < tmpM) M = tmpM;
             }
@@ -151,7 +152,7 @@ double ParallelOperations(double inter[2], double (*fun)(double x), double r, do
 
         if (k >= nthreads + 1) {
             int count = 0;
-            for (size_t i = 0; i < nthreads; i++) {
+            for (int i = 0; i < nthreads; i++) {
                 futuresR[i] = promisesR[i].get_future();
                 threadsR[i] = std::thread(calculateR, &R, &point, i, m, std::move(promisesR[i]));
                 threadsR[i].join();
@@ -159,7 +160,7 @@ double ParallelOperations(double inter[2], double (*fun)(double x), double r, do
             }
         }
         else {
-            for (size_t i = 0; i < k - 1; i++) {
+            for (int i = 0; i < k - 1; i++) {
                 R[i] = m * (point[i + 1].first - point[i].first) + ((point[i + 1].second - point[i].second) * (point[i + 1].second - point[i].second)) / (m * (point[i + 1].first - point[i].first)) - 2 * (point[i + 1].second + point[i].second);
             }
         }
@@ -231,8 +232,8 @@ double ParallelNewPoints(double inter[2], double (*fun)(double x), double r, dou
         for (int i = 0; i < k; i++)
             R[i].first = m * (point[i + 1].first - point[i].first) + ((point[i + 1].second - point[i].second) * (point[i + 1].second - point[i].second)) / (m * (point[i + 1].first - point[i].first)) - 2 * (point[i + 1].second + point[i].second);
 
-        size_t n = R.size() < nthreads ? R.size() : nthreads;
-        for (size_t i = 0; i < n; i++)
+        int n = (int)R.size() < nthreads ? (int)R.size() : nthreads;
+        for (int i = 0; i < n; i++)
             point.push_back(std::pair<double, double>(0, 0));
         r_max = RmaxN(R, n);
         for (int i = 0; i < n; i++) {
@@ -248,7 +249,7 @@ double ParallelNewPoints(double inter[2], double (*fun)(double x), double r, dou
             futures[i].valid();
         }
         std::sort(point.begin(), point.end());
-        for (size_t i = 0; i < n; i++)
+        for (int i = 0; i < n; i++)
             R.push_back(std::pair<double, int>(0, R.size()));
         k += (int)n;
         delete[]r_max;
