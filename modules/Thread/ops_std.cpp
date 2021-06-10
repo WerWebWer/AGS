@@ -141,7 +141,7 @@ double ParallelOperations(double inter[2], double (*fun)(double x), double r, do
         }
         else {
             for (int i = 0; i < k - 1; i++) {
-                int tmpM = std::abs((point[i + 1].second - point[i].second) / (point[i + 1].first - point[i].first));
+                double tmpM = std::abs((point[i + 1].second - point[i].second) / (point[i + 1].first - point[i].first));
                 if (M < tmpM) M = tmpM;
             }
         }

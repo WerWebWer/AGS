@@ -101,7 +101,7 @@ double ParallelOperations(double inter[2], double (*fun)(double x), double r, do
         {
 #pragma omp for nowait
             for (int i = 0; i < k - 1; i++) {
-                int tmpM = abs((point[i + 1].second - point[i].second) / (point[i + 1].first - point[i].first));
+                double tmpM = abs((point[i + 1].second - point[i].second) / (point[i + 1].first - point[i].first));
 #pragma omp critical
                 if (M < tmpM) M = tmpM;
             }
