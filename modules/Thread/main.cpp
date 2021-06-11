@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
 
 INSTANTIATE_TEST_SUITE_P(/**/, Threads, testing::Values(
     std::make_tuple(pfn[0], intervals[0], res[0], 2., 1e-3),
-    std::make_tuple(pfn[1], intervals[1], res[1], 2., 1e-3),
+    std::make_tuple(pfn[1], intervals[1], res[1], 2., 1e-4),
     std::make_tuple(pfn[2], intervals[2], res[2], 2., 1e-3),
     std::make_tuple(pfn[3], intervals[3], res[3], 2., 1e-3),
     std::make_tuple(pfn[4], intervals[4], res[4], 2., 1e-3),

@@ -40,7 +40,7 @@ TEST_P(Sequential, Test) {
     ASSERT_TRUE(resultInExpected(expected, result));
 }
 
-int main(int argc, char** argv) {fun
+int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
